@@ -7,60 +7,54 @@ from src.db.config import Config
 
 @pytest.mark.asyncio
 async def test_session_generator():
-    """
-    Проверка, что session() возвращает асинхронный генератор.
-    """
+    """Test that session() returns an async generator."""
     db = Database.from_obj(Config)
 
     gen = db.session()
-    # Проверка типа
+    # Check the type
     assert hasattr(gen, '__aiter__')
 
-    # Проверка работы генератора
+    # Test generator functionality
     async for session in gen:
         assert isinstance(session, AsyncSession)
         break
 
+
 @pytest.mark.asyncio
 async def test_base_name():
-    """
-    Проверка метода base_name возвращает правильное значение
-    """
+    """Test that base_name property returns the correct value."""
     db = Database.from_obj(Config)
 
     assert db.base_name == Config.database
 
+
 @pytest.mark.asyncio
 async def test_connection_type():
-    """
-    Проверка генератора connection и типа данных, возвращаемых генератором
-    """
+    """Test the connection generator and its return type."""
     db = Database.from_obj(Config)
 
     gen = db.connection()
 
-    # Проверка типа
+    # Check the type
     assert hasattr(gen, '__aiter__')
 
-    # Проверка работы генератора
+    # Test generator functionality
     async for conn in gen:
         assert isinstance(conn, AsyncConnection)
         break
 
+
 @pytest.mark.asyncio
 async def test_session_factory_type():
-    """
-    Проверка соответствия типа данных фабрики сессий
-    """
+    """Test that session_factory has the correct type."""
     db = Database.from_obj(Config)
 
     assert isinstance(db.session_factory, async_sessionmaker)
 
+
 @pytest.mark.asyncio
 async def test_session_manager_rollback_on_exception():
-    """
-    Проверка rollback при возникновении исключения.
-    """
+    """Test rollback behavior when an exception occurs."""
     db = Database.from_obj(Config)
 
     class DummySession:
@@ -86,9 +80,9 @@ async def test_session_manager_rollback_on_exception():
     with patch.object(db, '_session_factory', return_value=dummy_session):
         with pytest.raises(Exception):
             async with db.session_manager() as session:
-                # Возбуждаем исключение
+                # Raise an exception
                 raise RuntimeError("Test exception")
-        # Проверяем, что rollback вызван
+        # Verify rollback was called
         assert dummy_session.rolled_back
-        # Проверяем, что сессия закрыта
+        # Verify session was closed
         assert dummy_session.closed
