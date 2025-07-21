@@ -1,4 +1,4 @@
-name: Test of sqlalchemy-async-boilerplate with PostgreSQL
+name: Test sqlalchemy-async-boilerplate
 
 on:
   push:
