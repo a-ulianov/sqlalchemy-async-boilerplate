@@ -1,6 +1,6 @@
 # SQLAlchemy Async Boilerplate
 
-[![Tests](https://github.com/a-ulianov/sqlalchemy-async-boilerplate/actions/workflows/test.yml/badge.svg)](https://github.com/a-ulianov/sqlalchemy-async-boilerplate/actions/workflows/test.yml)
+[![Tests](https://github.com/a-ulianov/sqlalchemy-async-boilerplate/actions/workflows/test.yaml/badge.svg)](https://github.com/a-ulianov/sqlalchemy-async-boilerplate/actions/workflows/test.yaml)
 [![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![SQLAlchemy Version](https://img.shields.io/badge/SQLAlchemy-2.0+-lightgrey.svg)](https://www.sqlalchemy.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
