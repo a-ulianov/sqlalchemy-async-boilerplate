@@ -5,3 +5,5 @@
 .idea/
 venv/
 migrations/
+.coverage
+coverage.xml
