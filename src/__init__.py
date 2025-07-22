@@ -1,3 +1,3 @@
-from db import Database, logger
+from db import Database, Logger
 
-__all__ = ['Database', 'logger']
+__all__ = ['Database', 'Logger']

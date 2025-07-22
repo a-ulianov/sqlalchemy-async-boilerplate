@@ -1,9 +1,7 @@
 # SQLAlchemy Async Boilerplate
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=a-ulianov_sqlalchemy-async-boilerplate&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=a-ulianov_sqlalchemy-async-boilerplate)
 [![Tests](https://github.com/a-ulianov/sqlalchemy-async-boilerplate/actions/workflows/test.yaml/badge.svg)](https://github.com/a-ulianov/sqlalchemy-async-boilerplate/actions/workflows/test.yaml)
-[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://github.com/a-ulianov/sqlalchemy-async-boilerplate/actions/workflows/tests.yml)
-[![codecov](https://codecov.io/gh/a-ulianov/sqlalchemy-async-boilerplate/branch/main/graph/badge.svg)](https://codecov.io/gh/a-ulianov/sqlalchemy-async-boilerplate)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=a-ulianov_sqlalchemy-async-boilerplate&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=a-ulianov_sqlalchemy-async-boilerplate)[![codecov](https://codecov.io/gh/a-ulianov/sqlalchemy-async-boilerplate/branch/main/graph/badge.svg)](https://codecov.io/gh/a-ulianov/sqlalchemy-async-boilerplate)
 [![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![SQLAlchemy Version](https://img.shields.io/badge/SQLAlchemy-2.0+-lightgrey.svg)](https://www.sqlalchemy.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -50,8 +48,7 @@ pip install git+https://github.com/a-ulianov/sqlalchemy-async-boilerplate.git
 
 3. Create `.env` file:
    ```bash
-   cp .env.example .env
-   # Edit with your database credentials
+   echo "DB_USER=your_user\nDB_PASS=your_password\nDB_HOST=localhost\nDB_PORT=5432\nDB_NAME=your_db" > .env
    ```
 
 ## Usage
@@ -74,24 +71,18 @@ async with db.session_manager() as session:
 ### Advanced Usage
 
 ```python
-# Custom configuration
-from sqlalchemy.ext.asyncio import async_sessionmaker
-
+# Custom configuration with logger parameters
 db = Database(
     url="postgresql+asyncpg://user:password@host:port/database",
     pool_size=20,
     max_overflow=10,
-    isolation_level="READ COMMITTED"
+    isolation_level="READ COMMITTED",
+    logger_name="custom.logger",
+    log_to_file=True
 )
 
-# Using as FastAPI dependency
-async def get_db_session():
-    async with db.session_manager() as session:
-        yield session
-
-# Raw connection access
-async with db.connection() as conn:
-    await conn.execute(text("CREATE TABLE IF NOT EXISTS test (id SERIAL PRIMARY KEY)"))
+# Access logger instance
+db.logger.info("Database initialized")
 ```
 
 ## API Documentation
@@ -107,18 +98,12 @@ async with db.connection() as conn:
 | `check_connection()` | Verifies database availability |
 | `session()` | Async generator for dependency injection (e.g., FastAPI) |
 
-#### Configuration
+#### Logger Integration
 
-Configure via `Config` class or direct parameters:
+All logger parameters from Config are automatically passed to the Logger class:
 
 ```python
-Database(
-    url="postgresql+asyncpg://...",  # DSN string
-    pool_size=10,                   # Connection pool size
-    max_overflow=5,                 # Additional connections
-    isolation_level="REPEATABLE READ",
-    echo=True                       # Enable SQL logging
-)
+Database.from_obj(Config)  # Uses logger settings from Config
 ```
 
 ## Project Structure
@@ -134,11 +119,12 @@ sqlalchemy-async-boilerplate/
 │       ├── __init__.py            # Package exports
 │       ├── db.py                  # Main Database class
 │       ├── config.py              # Configuration loader
-│       └── logger.py              # Logging setup
+│       └── logger.py              # Logger class implementation
 ├── tests/
 │   ├── test_connection.py         # Connection tests
-│   └── test_session_manager.py    # Session tests
-├── .env.example                   # Environment template
+│   ├── test_session_manager.py    # Session tests
+│   ├── test_logger.py             # Logger tests
+│   └── test_additional.py         # Additional tests
 ├── .gitignore
 ├── main.py                        # Test runner
 ├── pyproject.toml
@@ -155,26 +141,8 @@ sqlalchemy-async-boilerplate/
 python main.py
 
 # Or directly with pytest
-pytest tests/ -v --asyncio-mode=auto
+pytest -v --asyncio-mode=auto
 ```
-
-### CI/CD Pipeline
-
-The GitHub Actions workflow (`.github/workflows/test.yml`) includes:
-- PostgreSQL service container
-- Python 3.11 environment
-- Async test execution
-- Dependency caching
-
-## Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin feature/your-feature`)
-5. Create a Pull Request
 
 ## License
 

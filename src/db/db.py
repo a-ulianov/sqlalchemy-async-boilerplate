@@ -14,7 +14,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase
 
-from .logger import logger
+from .logger import Logger
 
 
 class Database:
@@ -31,7 +31,7 @@ class Database:
         pool_size: Connection pool size
         max_overflow: Maximum number of connections beyond the pool size
         isolation_level: Transaction isolation level
-        **kwargs: Additional parameters for create_async_engine
+        **kwargs: Additional parameters for logger configuration
     """
     def __init__(
         self,
@@ -52,7 +52,6 @@ class Database:
             max_overflow=max_overflow,
             isolation_level=isolation_level,
             future=True,
-            **kwargs,
         )
 
         self._session_factory: async_sessionmaker[AsyncSession] = async_sessionmaker(
@@ -61,6 +60,8 @@ class Database:
             expire_on_commit=False,
             class_=AsyncSession,
         )
+
+        self.logger = Logger(**kwargs).logger
 
     @classmethod
     def from_obj(cls, obj: Any) -> 'Database':
@@ -87,7 +88,7 @@ class Database:
         attrs: dict[str, Any] = {}
 
         # Form DSN
-        if hasattr(obj, 'url'):
+        if hasattr(obj, 'url') and obj.url is not None:
             attrs['url'] = obj.url
         else:
             missing = [attr for attr in dsn_required if not hasattr(obj, attr)]
@@ -159,7 +160,7 @@ class Database:
         except Exception as e:
             # Rollback before re-raising exception
             await session.rollback()
-            logger.debug(f"Session error: {e}")
+            self.logger.debug(f"Session error: {e}")
             raise e
         finally:
             # Closure automatically rolls back unfinished transactions if no rollback occurred earlier
@@ -193,7 +194,7 @@ class Database:
             async with self._engine.connect() as connection:
                 yield connection
         except Exception as e:
-            logger.debug('Error during connection context operations.\n', e)
+            self.logger.debug('Error during connection context operations.\n', e)
             raise e
 
     async def check_connection(self) -> bool:

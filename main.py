@@ -1,8 +1,6 @@
 import pytest
 from pathlib import Path
 
-from src.db.logger import logger
-
 
 def run_tests():
     """
@@ -22,20 +20,21 @@ def run_tests():
 
     return pytest.main([
         test_path,
-        '-v',  # verbose output
+        '-v',
         '--asyncio-mode=auto',
-        '-W', 'ignore::DeprecationWarning'
+        '-W', 'ignore::DeprecationWarning',
     ])
 
 
 def main():
     """Main entry point for test execution."""
+
     exit_code = run_tests()
 
     if exit_code == 0:
-        logger.info('✅ All tests passed successfully!')
+        print('✅ All tests passed successfully!')
     else:
-        logger.error('❌ Some tests failed!')
+        print('❌ Some tests failed!')
 
 
 if __name__ == '__main__':
