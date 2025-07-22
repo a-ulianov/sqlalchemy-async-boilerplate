@@ -63,23 +63,27 @@ async def test_session_manager_rollback_on_exception():
             self.rolled_back = False
             self.closed = False
 
-        async def execute(self, stmt):
-            pass
+        def execute(self, stmt) -> None:
+            # Dummy method for a testing
+            ...
 
-        async def commit(self):
+        def commit(self) -> None:
+            # Dummy method for a testing
             self.committed = True
 
-        async def rollback(self):
+        def rollback(self) -> None:
+            # Dummy method for a testing
             self.rolled_back = True
 
-        async def close(self):
+        def close(self) -> None:
+            # Dummy method for a testing
             self.closed = True
 
     dummy_session = DummySession()
 
     with patch.object(db, '_session_factory', return_value=dummy_session):
         with pytest.raises(Exception):
-            async with db.session_manager() as session:
+            async with db.session_manager():
                 # Raise an exception
                 raise RuntimeError("Test exception")
         # Verify rollback was called

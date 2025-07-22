@@ -23,6 +23,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
     - name: Set up Python 3.11
       uses: actions/setup-python@v4
       with:
@@ -49,3 +51,14 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         verbose: true
         file: ./coverage.xml
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST }}
+      with:
+        args: >
+          -Dsonar.projectKey=a-ulianov_sqlalchemy-async-boilerplate
+          -Dsonar.sources=src/
+          -Dsonar.python.coverage.reportPaths=coverage.xml
+          -Dsonar.python.version=3.11

@@ -1,5 +1,6 @@
 # SQLAlchemy Async Boilerplate
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=a-ulianov_sqlalchemy-async-boilerplate&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=a-ulianov_sqlalchemy-async-boilerplate)
 [![Tests](https://github.com/a-ulianov/sqlalchemy-async-boilerplate/actions/workflows/test.yaml/badge.svg)](https://github.com/a-ulianov/sqlalchemy-async-boilerplate/actions/workflows/test.yaml)
 [![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://github.com/a-ulianov/sqlalchemy-async-boilerplate/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/a-ulianov/sqlalchemy-async-boilerplate/branch/main/graph/badge.svg)](https://codecov.io/gh/a-ulianov/sqlalchemy-async-boilerplate)

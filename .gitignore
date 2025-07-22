@@ -1,9 +1,11 @@
 .env
-*.pid
-.pytest_cache/
-**/__pycache__/
 .idea/
 venv/
-migrations/
-.coverage
+.venv/
+*.pid
+**/.coverage
 coverage.xml
+**/htmlcov/
+**/.sonar/
+**/.pytest_cache/
+**/__pycache__/
